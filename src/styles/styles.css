@@ -1,0 +1,55 @@
+.react-calendar__tile.highlight {
+    background-color: #bde4d8; /* Light teal for booked dates */
+    border-radius: 50%;
+    border: 1px solid #008080; /* Slight border for visibility */
+  }
+  
+  .react-calendar__tile {
+    transition: background-color 0.3s ease;
+  }
+  
+  .react-calendar__tile:hover {
+    background-color: #e0f7f3; /* Light hover effect */
+  }
+
+  /* Add these styles to your existing CSS file */
+  .calendar-container .fc {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.5em;
+    color: #2C7A7B;
+  }
+
+  .fc .fc-button-primary {
+    background-color: #2C7A7B;
+    border-color: #2C7A7B;
+  }
+
+  .fc .fc-button-primary:hover {
+    background-color: #285E61;
+    border-color: #285E61;
+  }
+
+  .fc-event {
+    cursor: pointer;
+    padding: 2px 4px;
+  }
+
+  .fc-day-today {
+    background-color: #E6FFFA !important;
+  }
+
+  .date-picker-custom {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+  }
+
+  .date-picker-custom:focus {
+    border-color: #319795;
+    box-shadow: 0 0 0 1px #319795;
+  }
