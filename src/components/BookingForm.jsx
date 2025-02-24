@@ -12,6 +12,7 @@ import {
   Heading,
   Center
 } from "@chakra-ui/react";
+import { API_URL } from '../config';
 
 const BookingForm = () => {
   const [name, setName] = useState('');
@@ -25,7 +26,14 @@ const BookingForm = () => {
   const handleBooking = async () => {
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://localhost:5001/api/bookings', {
+      // Adjust dates to local timezone at midnight
+      const adjustedStartDate = new Date(startDate);
+      adjustedStartDate.setHours(0, 0, 0, 0);
+      
+      const adjustedEndDate = new Date(endDate);
+      adjustedEndDate.setHours(0, 0, 0, 0);
+
+      const response = await fetch(`${API_URL}/api/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +41,8 @@ const BookingForm = () => {
         body: JSON.stringify({
           name,
           email,
-          startDate,
-          endDate
+          startDate: adjustedStartDate.toISOString(),
+          endDate: adjustedEndDate.toISOString()
         })
       });
 

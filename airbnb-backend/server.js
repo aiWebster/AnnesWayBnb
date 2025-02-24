@@ -2,11 +2,11 @@ import { config } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { env } from 'process';
 import bookingRoutes from "./routes/bookings.js";
 import guestbookRoutes from "./routes/guestbook.js";
-import { env } from 'process';
 
-config(); // Initialize dotenv
+config();
 
 const app = express();
 
@@ -16,9 +16,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB connection with detailed error logging
+// MongoDB connection
 mongoose
-  .connect(env.MONGO_URI)
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);
@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-const PORT = env.PORT || 5001;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

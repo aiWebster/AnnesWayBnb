@@ -13,22 +13,23 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Convert dates to Date objects for comparison
+    // Convert dates to local timezone at midnight
     const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    
     const end = new Date(endDate);
+    end.setHours(0, 0, 0, 0);
 
     // Check for overlapping bookings
     const overlappingBookings = await Booking.find({
       $or: [
-        // New booking starts during an existing booking
         {
-          startDate: { $lte: endDate },
-          endDate: { $gte: startDate }
+          startDate: { $lte: end.toISOString() },
+          endDate: { $gte: start.toISOString() }
         },
-        // New booking ends during an existing booking
         {
-          startDate: { $lte: endDate },
-          endDate: { $gte: startDate }
+          startDate: { $lte: end.toISOString() },
+          endDate: { $gte: start.toISOString() }
         }
       ]
     });
@@ -44,8 +45,8 @@ router.post('/', async (req, res) => {
     const newBooking = new Booking({
       name,
       email,
-      startDate,
-      endDate
+      startDate: start,
+      endDate: end
     });
 
     await newBooking.save();
