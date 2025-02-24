@@ -20,18 +20,22 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => {
-    console.error("MongoDB connection error details:", {
-      message: err.message,
-      code: err.code,
-      errorLabels: err.errorLabels,
-      name: err.name
-    });
+    console.error("MongoDB connection error:", err);
   });
 
 // Routes
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/guestbook", guestbookRoutes);
 
+// Basic route to test if server is running
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
 // Start server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const HOST = '0.0.0.0';
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
+});
