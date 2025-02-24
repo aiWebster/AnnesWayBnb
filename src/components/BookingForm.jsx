@@ -12,7 +12,9 @@ import {
   Heading,
   Center
 } from "@chakra-ui/react";
-import { API_URL } from '../config';
+
+// Remove trailing slash and ensure consistent URL
+const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, '');
 
 const BookingForm = () => {
   const [name, setName] = useState('');

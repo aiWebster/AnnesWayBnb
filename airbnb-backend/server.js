@@ -20,6 +20,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ message: 'Internal server error', error: err.message });
+});
+
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
@@ -35,6 +41,12 @@ app.use("/api/guestbook", guestbookRoutes);
 // Health check route
 app.get('/', (req, res) => {
   res.send('Server is running');
+});
+
+// Catch-all route for debugging
+app.use('*', (req, res) => {
+  console.log('Request to unknown route:', req.originalUrl);
+  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
 });
 
 // Start server

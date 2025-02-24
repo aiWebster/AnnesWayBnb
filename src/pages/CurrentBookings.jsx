@@ -13,7 +13,9 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { API_URL } from '../config';
+
+// Remove trailing slash and ensure consistent URL
+const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, '');
 
 const CurrentBookings = () => {
   const [events, setEvents] = useState([]);
@@ -25,28 +27,27 @@ const CurrentBookings = () => {
     const fetchBookings = async () => {
       try {
         const response = await fetch(`${API_URL}/api/bookings/all`);
-        if (response.ok) {
-          const bookings = await response.json();
-          console.log("Raw bookings data:", bookings);
-
-          // Convert the array of bookings into event objects
-          const formattedEvents = bookings.map((booking) => ({
-            title: booking.name,  // Use the name instead of 'Booked'
-            start: new Date(booking.date),
-            end: new Date(booking.date),
-            backgroundColor: '#2C7A7B',
-            borderColor: '#2C7A7B',
-            allDay: true,
-            extendedProps: {
-              email: booking.email
-            }
-          }));
-          
-          console.log("Formatted events:", formattedEvents);
-          setEvents(formattedEvents);
-        } else {
-          throw new Error(`Failed to fetch bookings: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const bookings = await response.json();
+        console.log("Raw bookings data:", bookings);
+
+        // Convert the array of bookings into event objects
+        const formattedEvents = bookings.map((booking) => ({
+          title: booking.name,  // Use the name instead of 'Booked'
+          start: new Date(booking.date),
+          end: new Date(booking.date),
+          backgroundColor: '#2C7A7B',
+          borderColor: '#2C7A7B',
+          allDay: true,
+          extendedProps: {
+            email: booking.email
+          }
+        }));
+        
+        console.log("Formatted events:", formattedEvents);
+        setEvents(formattedEvents);
       } catch (error) {
         console.error("Fetch error:", error);
         toast({

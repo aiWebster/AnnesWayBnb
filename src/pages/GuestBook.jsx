@@ -17,7 +17,9 @@ import {
   HStack
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { API_URL } from '../config';
+
+// Remove trailing slash and ensure consistent URL
+const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, '');
 
 const GuestBook = () => {
   const [entries, setEntries] = useState([]);
@@ -33,6 +35,7 @@ const GuestBook = () => {
   const fetchEntries = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/guestbook`);
+      console.log('Response:', response.data); // Add this for debugging
       setEntries(response.data);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -66,7 +69,8 @@ const GuestBook = () => {
       
       // Refresh entries
       fetchEntries();
-    } catch (error) {
+    } catch (err) {
+      console.error('Error:', err);
       toast({
         title: 'Error adding entry',
         status: 'error',
