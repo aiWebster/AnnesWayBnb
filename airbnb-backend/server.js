@@ -2,7 +2,6 @@ import { config } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { env } from 'process';
 import bookingRoutes from "./routes/bookings.js";
 import guestbookRoutes from "./routes/guestbook.js";
 
@@ -12,7 +11,12 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: env.FRONTEND_URL || "http://localhost:5173"
+  origin: [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',  // Local development
+    'https://annesway.onrender.com/'  // Your Render frontend URL
+  ],
+  credentials: true
 }));
 app.use(express.json());
 

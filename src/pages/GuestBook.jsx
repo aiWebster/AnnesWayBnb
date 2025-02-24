@@ -17,6 +17,7 @@ import {
   HStack
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const GuestBook = () => {
   const [entries, setEntries] = useState([]);
@@ -31,9 +32,10 @@ const GuestBook = () => {
 
   const fetchEntries = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/guestbook');
+      const response = await axios.get(`${API_URL}/api/guestbook`);
       setEntries(response.data);
-    } catch (error) {
+    } catch (err) {
+      console.error('Fetch error:', err);
       toast({
         title: 'Error fetching entries',
         status: 'error',
@@ -45,7 +47,7 @@ const GuestBook = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5001/api/guestbook', {
+      await axios.post(`${API_URL}/api/guestbook`, {
         name,
         message,
         rating: Number(rating)

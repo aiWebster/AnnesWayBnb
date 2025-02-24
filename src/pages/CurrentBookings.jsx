@@ -13,6 +13,7 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { API_URL } from '../config';
 
 const CurrentBookings = () => {
   const [events, setEvents] = useState([]);
@@ -23,7 +24,7 @@ const CurrentBookings = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/bookings/all");
+        const response = await fetch(`${API_URL}/api/bookings/all`);
         if (response.ok) {
           const bookings = await response.json();
           console.log("Raw bookings data:", bookings);
