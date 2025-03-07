@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { env } from 'process';
 import bookingRoutes from "./routes/bookings.js";
 import guestbookRoutes from "./routes/guestbook.js";
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ message: 'Internal server error', error: err.message });
+  next(err);
 });
 
 // MongoDB connection

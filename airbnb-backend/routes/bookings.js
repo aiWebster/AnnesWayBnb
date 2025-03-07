@@ -6,42 +6,41 @@ const router = express.Router();
 // POST route to handle booking creation
 router.post('/', async (req, res) => {
   try {
-    const { name, email, startDate, endDate } = req.body;
+    const { name, email, startDate, endDate, forceBook } = req.body;
 
     // Validate required fields
     if (!name || !email || !startDate || !endDate) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Convert dates to local timezone at midnight
+    // Create dates at midnight UTC
     const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
+    start.setUTCHours(0, 0, 0, 0);
     
     const end = new Date(endDate);
-    end.setHours(0, 0, 0, 0);
+    end.setUTCHours(23, 59, 59, 999);
 
-    // Check for overlapping bookings
-    const overlappingBookings = await Booking.find({
-      $or: [
-        {
-          startDate: { $lte: end.toISOString() },
-          endDate: { $gte: start.toISOString() }
-        },
-        {
-          startDate: { $lte: end.toISOString() },
-          endDate: { $gte: start.toISOString() }
-        }
-      ]
-    });
-
-    if (overlappingBookings.length > 0) {
-      return res.status(409).json({
-        message: 'Dates overlap with existing booking',
-        overlapping: true,
-        existingBookings: overlappingBookings
+    // Only check for overlapping if not force booking
+    if (!forceBook) {
+      const overlappingBookings = await Booking.find({
+        $or: [
+          {
+            startDate: { $lte: end },
+            endDate: { $gte: start }
+          }
+        ]
       });
+
+      if (overlappingBookings.length > 0) {
+        return res.status(409).json({
+          message: 'Dates overlap with existing booking',
+          overlapping: true,
+          existingBookings: overlappingBookings
+        });
+      }
     }
 
+    // Create and save the booking regardless of overlap if forceBook is true
     const newBooking = new Booking({
       name,
       email,
@@ -61,7 +60,7 @@ router.post('/', async (req, res) => {
 router.get('/all', async (req, res) => {
   try {
     const bookings = await Booking.find({});
-    console.log('Found bookings:', bookings);
+    console.log('Raw bookings from DB:', bookings);
 
     // Generate an array of all booked dates with names
     const bookedDates = bookings.flatMap((booking) => {

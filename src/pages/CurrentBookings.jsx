@@ -34,17 +34,35 @@ const CurrentBookings = () => {
         console.log("Raw bookings data:", bookings);
 
         // Convert the array of bookings into event objects
-        const formattedEvents = bookings.map((booking) => ({
-          title: booking.name,  // Use the name instead of 'Booked'
-          start: new Date(booking.date),
-          end: new Date(booking.date),
-          backgroundColor: '#2C7A7B',
-          borderColor: '#2C7A7B',
-          allDay: true,
-          extendedProps: {
-            email: booking.email
-          }
-        }));
+        const formattedEvents = bookings.map((booking) => {
+          // Create dates in local timezone
+          const startDate = new Date(booking.date + 'T00:00:00');
+          const endDate = new Date(booking.date + 'T23:59:59');
+          
+          // Adjust for timezone
+          const offset = startDate.getTimezoneOffset();
+          startDate.setMinutes(startDate.getMinutes() - offset);
+          endDate.setMinutes(endDate.getMinutes() - offset);
+
+          console.log('Dates after timezone adjustment:', {
+            original: booking.date,
+            adjustedStart: startDate.toISOString(),
+            adjustedEnd: endDate.toISOString(),
+            localString: startDate.toLocaleDateString()
+          });
+
+          return {
+            title: booking.name,
+            start: startDate,
+            end: endDate,
+            backgroundColor: '#2C7A7B',
+            borderColor: '#2C7A7B',
+            allDay: true,
+            extendedProps: {
+              email: booking.email
+            }
+          };
+        });
         
         console.log("Formatted events:", formattedEvents);
         setEvents(formattedEvents);

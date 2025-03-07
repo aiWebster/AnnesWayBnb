@@ -53,6 +53,17 @@ const Home = () => {
         <Text fontSize="xl" maxW="2xl">
         </Text>
       </VStack>
+
+      {/* Image */}
+      <Box
+        as="img"
+        src="/path/to/image.jpg"
+        alt="Description"
+        width="100%"
+        height="auto"
+        objectFit="cover"
+        loading="lazy"
+      />
     </Box>
   );
 };
